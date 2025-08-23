@@ -3,7 +3,7 @@ const { createApp } = Vue;
 createApp({
   data() {
     return {
-      totalAmount: 4169000,
+      totalAmount: 0,
       vatRate: 10,
       products: [
         // { name: "Rượu vang De La Rosa Rosso 750ml", price: 90000 },
@@ -87,7 +87,7 @@ createApp({
 
       const target = this.totalBeforeVAT;
       const result = balancedMinError(
-        validProducts.map((item) => item.price),
+        validProducts.map((item) => Math.round(item.price)),
         target
       );
 
