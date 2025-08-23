@@ -1,980 +1,163 @@
 <!DOCTYPE html>
 <html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tính toán số lượng hàng hóa</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.global.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-        
-        .header {
-            background: linear-gradient(135deg, #2c3e50, #3498db);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
-        
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-        
-        .header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
-        
-        .content {
-            padding: 30px;
-        }
-        
-        .input-section {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 25px;
-            margin-bottom: 30px;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #2c3e50;
-            font-size: 1.1rem;
-        }
-        
-        input[type="number"] {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #e0e6ed;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            background: white;
-        }
-        
-        input[type="number"]:focus {
-            outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-        }
-        
-        .products-section {
-            background: white;
-            border: 2px solid #e0e6ed;
-            border-radius: 10px;
-            padding: 25px;
-            margin-bottom: 30px;
-        }
-        
-        .section-title {
-            font-size: 1.4rem;
-            color: #2c3e50;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .product-item {
-            background: #f8f9fa;
-            border: 1px solid #e0e6ed;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 15px;
-            transition: all 0.3s ease;
-        }
-        
-        .product-item:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        
-        .product-row {
-            display: grid;
-            grid-template-columns: 2fr 1fr auto;
-            gap: 15px;
-            align-items: end;
-        }
-        
-        .btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #2980b9, #2c3e50);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
-        }
-        
-        .btn-success {
-            background: linear-gradient(135deg, #27ae60, #219a52);
-            color: white;
-        }
-        
-        .btn-success:hover {
-            background: linear-gradient(135deg, #219a52, #1e8449);
-            transform: translateY(-2px);
-        }
-        
-        .btn-danger {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-            color: white;
-            padding: 8px 16px;
-            font-size: 0.9rem;
-        }
-        
-        .btn-danger:hover {
-            background: linear-gradient(135deg, #c0392b, #a93226);
-            transform: translateY(-2px);
-        }
-        
-        .results {
-            background: linear-gradient(135deg, #ecf0f1, #bdc3c7);
-            border-radius: 10px;
-            padding: 25px;
-            margin-top: 30px;
-        }
-        
-        .results-title {
-            color: #2c3e50;
-            font-size: 1.4rem;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        
-        .result-table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        
-        .result-table th {
-            background: linear-gradient(135deg, #34495e, #2c3e50);
-            color: white;
-            padding: 15px;
-            text-align: left;
-            font-weight: 600;
-        }
-        
-        .result-table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #e0e6ed;
-        }
-        
-        .result-table tr:nth-child(even) {
-            background: #f8f9fa;
-        }
-        
-        .result-table tr:hover {
-            background: #e3f2fd;
-        }
-        
-        .total-row {
-            background: linear-gradient(135deg, #3498db, #2980b9) !important;
-            color: white !important;
-            font-weight: bold;
-        }
-        
-        .total-row td {
-            border: none !important;
-        }
-        
-        .error {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-            color: white;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
-            text-align: center;
-            font-weight: 600;
-        }
-        
-        .success {
-            background: linear-gradient(135deg, #27ae60, #219a52);
-            color: white;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
-            text-align: center;
-            font-weight: 600;
-        }
-        
-        .controls {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin: 20px 0;
-        }
-        
-        @media (max-width: 768px) {
-            .container {
-                margin: 10px;
-            }
-            
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            .product-row {
-                grid-template-columns: 1fr;
-                gap: 10px;
-            }
-            
-            .controls {
-                flex-direction: column;
-            }
-        }
-    </style>
-</head>
-<body>
+    <link rel="stylesheet" href="main.css" />
+  </head>
+  <body>
     <div id="app">
-        <div class="container">
-            <div class="header">
-                <h1>🧮 Tính toán số lượng hàng hóa</h1>
-                <p>Nhập đơn giá và tổng tiền để tính toán số lượng cần xuất</p>
-            </div>
-            
-            <div class="content">
-                <!-- Phần nhập tổng tiền -->
-                <div class="input-section">
-                    <div class="form-group">
-                        <label for="totalAmount">💰 Tổng tiền thanh toán (đã bao gồm VAT):</label>
-                        <input 
-                            type="number" 
-                            id="totalAmount"
-                            v-model="totalAmount" 
-                            placeholder="Ví dụ: 4169000"
-                            min="0"
-                        >
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="vatRate">📊 Thuế suất VAT (%):</label>
-                        <input 
-                            type="number" 
-                            id="vatRate"
-                            v-model="vatRate" 
-                            placeholder="Ví dụ: 10"
-                            min="0"
-                            max="100"
-                        >
-                    </div>
-                </div>
-                
-                <!-- Phần danh sách sản phẩm -->
-                <div class="products-section">
-                    <h2 class="section-title">
-                        📦 Danh sách mặt hàng
-                    </h2>
-                    
-                    <div v-for="(product, index) in products" :key="index" class="product-item">
-                        <div class="product-row">
-                            <div class="form-group">
-                                <label>Tên hàng hóa:</label>
-                                <input 
-                                    type="text" 
-                                    v-model="product.name" 
-                                    :placeholder="'Sản phẩm ' + (index + 1)"
-                                    style="border: 2px solid #e0e6ed; padding: 12px; border-radius: 8px; width: 100%;"
-                                >
-                            </div>
-                            <div class="form-group">
-                                <label>Đơn giá (VNĐ):</label>
-                                <input 
-                                    type="number" 
-                                    v-model="product.price" 
-                                    placeholder="Nhập đơn giá"
-                                    min="0"
-                                >
-                            </div>
-                            <button 
-                                @click="removeProduct(index)" 
-                                class="btn btn-danger"
-                                v-if="products.length > 1"
-                            >
-                                🗑️ Xóa
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="controls">
-                        <button @click="addProduct" class="btn btn-primary">
-                            ➕ Thêm mặt hàng
-                        </button>
-                        <button @click="calculate" class="btn btn-success">
-                            🧮 Tính toán số lượng
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Hiển thị kết quả -->
-                <div v-if="showResults" class="results">
-                    <h2 class="results-title">📋 Kết quả tính toán</h2>
-                    
-                    <div v-if="errorMessage" class="error">
-                        {{ errorMessage }}
-                    </div>
-                    
-                    <div v-else-if="successMessage" class="success">
-                        {{ successMessage }}
-                    </div>
-                    
-                    <table v-if="calculatedResults.length > 0" class="result-table">
-                        <thead>
-                            <tr>
-                                <th>STT</th>
-                                <th>Tên hàng hóa</th>
-                                <th>Đơn giá (VNĐ)</th>
-                                <th>Số lượng</th>
-                                <th>Thành tiền (VNĐ)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="(result, index) in calculatedResults" :key="index">
-                                <td>{{ index + 1 }}</td>
-                                <td>{{ result.name }}</td>
-                                <td>{{ formatNumber(result.price) }}</td>
-                                <td>{{ result.quantity }}</td>
-                                <td>{{ formatNumber(result.subtotal) }}</td>
-                            </tr>
-                            <tr class="total-row">
-                                <td colspan="4"><strong>Tổng cộng</strong></td>
-                                <td><strong>{{ formatNumber(calculatedResults.reduce((sum, r) => sum + r.subtotal, 0)) }}</strong></td>
-                            </tr>
-                            <tr class="total-row">
-                                <td colspan="4"><strong>Thuế VAT ({{ vatRate }}%)</strong></td>
-                                <td><strong>{{ formatNumber(vatAmount) }}</strong></td>
-                            </tr>
-                            <tr class="total-row">
-                                <td colspan="4"><strong>Tổng thanh toán</strong></td>
-                                <td><strong>{{ formatNumber(totalBeforeVAT + vatAmount) }}</strong></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+      <div class="container">
+        <div class="header">
+          <h1>🧮 Tính toán số lượng hàng hóa</h1>
+          <p>Nhập đơn giá và tổng tiền để tính toán số lượng cần xuất</p>
         </div>
+
+        <div class="content">
+          <!-- Phần nhập tổng tiền -->
+          <div class="input-section">
+            <div class="form-group">
+              <label for="totalAmount"
+                >💰 Tổng tiền thanh toán (đã bao gồm VAT):</label
+              >
+              <input
+                type="number"
+                id="totalAmount"
+                v-model="totalAmount"
+                placeholder="Ví dụ: 4169000"
+                min="0"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="vatRate">📊 Thuế suất VAT (%):</label>
+              <input
+                type="number"
+                id="vatRate"
+                v-model="vatRate"
+                placeholder="Ví dụ: 10"
+                min="0"
+                max="100"
+              />
+            </div>
+          </div>
+
+          <!-- Phần danh sách sản phẩm -->
+          <div class="products-section">
+            <h2 class="section-title">📦 Danh sách mặt hàng</h2>
+
+            <div
+              v-for="(product, index) in products"
+              :key="index"
+              class="product-item"
+            >
+              <div class="product-row">
+                <div class="form-group">
+                  <label>Tên hàng hóa:</label>
+                  <input
+                    type="text"
+                    v-model="product.name"
+                    :placeholder="'Sản phẩm ' + (index + 1)"
+                    style="
+                      border: 2px solid #e0e6ed;
+                      padding: 12px;
+                      border-radius: 8px;
+                      width: 100%;
+                    "
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Đơn giá (VNĐ):</label>
+                  <input
+                    type="number"
+                    v-model="product.price"
+                    placeholder="Nhập đơn giá"
+                    min="0"
+                  />
+                </div>
+                <button
+                  @click="removeProduct(index)"
+                  class="btn btn-danger"
+                  v-if="products.length > 1"
+                >
+                  🗑️ Xóa
+                </button>
+              </div>
+            </div>
+
+            <div id="controls" class="controls">
+              <button @click="addProduct" class="btn btn-primary">
+                ➕ Thêm mặt hàng
+              </button>
+              <button @click="calculate" class="btn btn-success">
+                🧮 Tính toán số lượng
+              </button>
+              <button @click="removeAllProducts" class="btn btn-danger">
+                🗑️ Xóa tất cả
+              </button>
+            </div>
+          </div>
+
+          <!-- Hiển thị kết quả -->
+          <div v-if="showResults" id="calculated" class="results">
+            <h2 class="results-title">📋 Kết quả tính toán</h2>
+
+            <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+
+            <div v-else-if="successMessage" class="success">
+              {{ successMessage }}
+            </div>
+
+            <table v-if="calculatedResults.length > 0" class="result-table">
+              <thead>
+                <tr>
+                  <th>STT</th>
+                  <th>Tên hàng hóa</th>
+                  <th>Số lượng</th>
+                  <th>Đơn giá (VNĐ)</th>
+                  <th>Thành tiền (VNĐ)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(result, index) in calculatedResults" :key="index">
+                  <td>{{ index + 1 }}</td>
+                  <td>{{ result.name }}</td>
+                  <td>{{ result.quantity }}</td>
+                  <td>{{ formatNumber(result.price) }}</td>
+                  <td>{{ formatNumber(result.subtotal) }}</td>
+                </tr>
+                <tr class="total-row">
+                  <td colspan="4"><strong>Tổng cộng</strong></td>
+                  <td>
+                    <strong
+                      >{{ formatNumber(calculatedResults.reduce((sum, r) => sum
+                      + r.subtotal, 0)) }}</strong
+                    >
+                  </td>
+                </tr>
+                <tr class="total-row">
+                  <td colspan="4">
+                    <strong>Thuế VAT ({{ vatRate }}%)</strong>
+                  </td>
+                  <td><strong>{{ formatNumber(vatAmount) }}</strong></td>
+                </tr>
+                <tr class="total-row">
+                  <td colspan="4"><strong>Tổng thanh toán</strong></td>
+                  <td>
+                    <strong
+                      >{{ formatNumber(totalBeforeVAT + vatAmount) }}</strong
+                    >
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
-
-    <script>
-        const { createApp } = Vue;
-
-        createApp({
-            data() {
-                return {
-                    totalAmount: 4169000,
-                    vatRate: 10,
-                    products: [
-                        { name: 'Rượu vang De La Rosa Rosso 750ml', price: 90000 },
-                        { name: 'Rượu vang Marcoli Rosso 750ml', price: 90000 },
-                        { name: 'Rượu vang Segreto Negroamaro 750ml', price: 100000 },
-                        { name: 'Rượu vang 1933 Rosso 750ml', price: 90000 },
-                        { name: 'Rượu vang Tolucci đỏ 14% 750ml', price: 90000 },
-                        { name: 'Rượu Vang Francis Gillot Sauvignon Blanc 750ml', price: 60909 },
-                        { name: 'Rượu Vang Francis Gillot Cabernet Sauvignon 750ml', price: 60000 }
-                    ],
-                    calculatedResults: [],
-                    showResults: false,
-                    errorMessage: '',
-                    successMessage: ''
-                }
-            },
-            computed: {
-                totalBeforeVAT() {
-                    return this.calculatedResults.reduce((sum, r) => sum + r.subtotal, 0);
-                },
-                vatAmount() {
-                    return Math.round(this.totalBeforeVAT * this.vatRate / 100);
-                }
-            },
-            methods: {
-                addProduct() {
-                    this.products.push({
-                        name: '',
-                        price: 0
-                    });
-                },
-                removeProduct(index) {
-                    this.products.splice(index, 1);
-                },
-                formatNumber(num) {
-                    return new Intl.NumberFormat('vi-VN').format(num);
-                },
-                calculate() {
-                    this.showResults = true;
-                    this.errorMessage = '';
-                    this.successMessage = '';
-                    this.calculatedResults = [];
-                    
-                    // Kiểm tra dữ liệu đầu vào
-                    if (!this.totalAmount || this.totalAmount <= 0) {
-                        this.errorMessage = 'Vui lòng nhập tổng tiền hợp lệ!';
-                        return;
-                    }
-                    
-                    if (!this.vatRate || this.vatRate < 0) {
-                        this.errorMessage = 'Vui lòng nhập thuế suất VAT hợp lệ!';
-                        return;
-                    }
-                    
-                    const validProducts = this.products.filter(p => p.name && p.price > 0);
-                    if (validProducts.length === 0) {
-                        this.errorMessage = 'Vui lòng nhập ít nhất một sản phẩm với đơn giá hợp lệ!';
-                        return;
-                    }
-                    
-                    // Tính toán target từ tổng tiền (bao gồm VAT)
-                    const target = Math.round(this.totalAmount / (1 + this.vatRate / 100));
-                    
-                    // Tìm phương án tối ưu
-                    const result = this.findOptimalQuantities(validProducts, target);
-                    
-                    if (result) {
-                        const actualTotal = result.total;
-                        const actualVAT = Math.round(actualTotal * this.vatRate / 100);
-                        const actualTotalWithVAT = actualTotal + actualVAT;
-                        const error = Math.abs(actualTotalWithVAT - this.totalAmount);
-                        
-                        // Kiểm tra sai số < 1000 VNĐ
-                        if (error < 1000) {
-                            this.calculatedResults = result.products;
-                            this.successMessage = `✅ Tìm được phương án tối ưu! Sai số: ${this.formatNumber(error)} VNĐ`;
-                        } else {
-                            this.errorMessage = `❌ Không tìm được phương án với sai số < 1,000 VNĐ. Sai số hiện tại: ${this.formatNumber(error)} VNĐ`;
-                        }
-                    } else {
-                        this.errorMessage = 'Không tìm được phương án phù hợp với tổng tiền đã cho. Vui lòng kiểm tra lại đơn giá các sản phẩm.';
-                    }
-                },
-                findOptimalQuantities(products, target) {
-                    const n = products.length;
-                    let validSolutions = [];
-                    
-                    console.log(`🔍 Bắt đầu tìm kiếm với target: ${target.toLocaleString()} VNĐ`);
-                    
-                    // Bước 1: Vét cạn tìm TẤT CẢ phương án có sai số < 1000 VNĐ
-                    this.exhaustiveSearch(products, target, validSolutions);
-                    
-                    console.log(`📊 Tìm được ${validSolutions.length} phương án hợp lệ`);
-                    
-                    if (validSolutions.length === 0) {
-                        console.log('❌ Không tìm được phương án nào có sai số < 1000 VNĐ');
-                        return null;
-                    }
-                    
-                    // Bước 2: Trong các phương án hợp lệ, chọn phương án cân bằng nhất
-                    let bestSolution = validSolutions[0];
-                    let bestBalance = this.calculateBalanceScore(bestSolution.quantities);
-                    
-                    for (let i = 1; i < validSolutions.length; i++) {
-                        const balance = this.calculateBalanceScore(validSolutions[i].quantities);
-                        if (balance > bestBalance) {
-                            bestBalance = balance;
-                            bestSolution = validSolutions[i];
-                        }
-                    }
-                    
-                    console.log(`✅ Chọn phương án tốt nhất với độ cân bằng: ${bestBalance.toFixed(2)}`);
-                    
-                    return {
-                        products: products.map((product, i) => ({
-                            name: product.name,
-                            price: product.price,
-                            quantity: bestSolution.quantities[i],
-                            subtotal: bestSolution.quantities[i] * product.price
-                        })),
-                        total: bestSolution.total
-                    };
-                },
-                
-                exhaustiveSearch(products, target, validSolutions) {
-                    const n = products.length;
-                    
-                    // Tính giới hạn số lượng cho mỗi sản phẩm
-                    const maxQuantities = products.map(p => Math.min(30, Math.ceil(this.totalAmount / p.price)));
-                    
-                    console.log('🎯 Giới hạn số lượng:', maxQuantities);
-                    
-                    // Tìm kiếm đệ quy với pruning thông minh
-                    const searchRecursive = (index, currentQuantities, currentTotal) => {
-                        if (index === n) {
-                            // Kiểm tra điều kiện sai số VAT
-                            const vat = Math.round(currentTotal * this.vatRate / 100);
-                            const totalWithVAT = currentTotal + vat;
-                            const error = Math.abs(totalWithVAT - this.totalAmount);
-                            
-                            if (error < 1000) {
-                                validSolutions.push({
-                                    quantities: [...currentQuantities],
-                                    total: currentTotal,
-                                    error: error
-                                });
-                                
-                                if (validSolutions.length % 100 === 0) {
-                                    console.log(`📈 Đã tìm được ${validSolutions.length} phương án hợp lệ`);
-                                }
-                            }
-                            return;
-                        }
-                        
-                        // Pruning: ước tính xem có thể đạt được target không
-                        const remainingProducts = n - index;
-                        const minPossibleTotal = currentTotal + remainingProducts; // ít nhất 1 cho mỗi sản phẩm còn lại
-                        const maxPossibleTotal = currentTotal + products.slice(index).reduce((sum, p, i) => {
-                            return sum + maxQuantities[index + i] * p.price;
-                        }, 0);
-                        
-                        // Ước tính khoảng target cần thiết (không tính VAT chính xác để pruning nhanh)
-                        const roughTargetMin = this.totalAmount / (1 + this.vatRate / 100) - 2000;
-                        const roughTargetMax = this.totalAmount / (1 + this.vatRate / 100) + 2000;
-                        
-                        if (maxPossibleTotal < roughTargetMin || minPossibleTotal > roughTargetMax) {
-                            return; // Pruning
-                        }
-                        
-                        // Thử từng số lượng cho sản phẩm hiện tại
-                        for (let qty = 1; qty <= maxQuantities[index]; qty++) {
-                            currentQuantities[index] = qty;
-                            const newTotal = currentTotal + qty * products[index].price;
-                            
-                            // Pruning sớm nếu quá xa target
-                            if (index < n - 2) { // Chỉ pruning khi còn ít nhất 2 sản phẩm
-                                const estimatedFinalTotal = newTotal + (remainingProducts - 1) * 50000; // Ước tính thô
-                                if (Math.abs(estimatedFinalTotal - target) > target * 0.5) {
-                                    continue;
-                                }
-                            }
-                            
-                            searchRecursive(index + 1, currentQuantities, newTotal);
-                        }
-                    };
-                    
-                    searchRecursive(0, new Array(n), 0);
-                },
-                
-                calculateBalanceScore(quantities) {
-                    const n = quantities.length;
-                    if (n <= 1) return 100;
-                    
-                    const maxQty = Math.max(...quantities);
-                    const minQty = Math.min(...quantities);
-                    const avgQty = quantities.reduce((sum, qty) => sum + qty, 0) / n;
-                    
-                    // Điểm cân bằng dựa trên:
-                    // 1. Chênh lệch min-max (50%)
-                    const rangeScore = Math.max(0, 100 - (maxQty - minQty) * 10);
-                    
-                    // 2. Độ lệch chuẩn so với trung bình (30%)
-                    const variance = quantities.reduce((sum, qty) => sum + Math.pow(qty - avgQty, 2), 0) / n;
-                    const stdDev = Math.sqrt(variance);
-                    const stdScore = Math.max(0, 100 - stdDev * 20);
-                    
-                    // 3. Số sản phẩm có số lượng bằng nhau (20%)
-                    const uniqueQtys = [...new Set(quantities)];
-                    const equalityScore = Math.max(0, 100 - uniqueQtys.length * 15);
-                    
-                    return rangeScore * 0.5 + stdScore * 0.3 + equalityScore * 0.2;
-                },
-                
-                calculateFinalScore(solution, target) {
-                    const quantities = solution.quantities;
-                    const n = quantities.length;
-                    
-                    // Tính sai số cuối cùng (bao gồm VAT)
-                    const actualVAT = Math.round(solution.total * this.vatRate / 100);
-                    const totalWithVAT = solution.total + actualVAT;
-                    const finalError = Math.abs(totalWithVAT - this.totalAmount);
-                    
-                    // 1. Điểm sai số VAT (ưu tiên cao nhất) - 50%
-                    const vatErrorScore = finalError < 1000 ? 50 : Math.max(0, 50 - finalError / 100);
-                    
-                    // 2. Điểm cân bằng số lượng - 40%
-                    const maxQty = Math.max(...quantities);
-                    const minQty = Math.min(...quantities);
-                    const qtyDiff = maxQty - minQty;
-                    const balanceScore = Math.max(0, 40 - qtyDiff * 5);
-                    
-                    // 3. Điểm sai số target gốc - 10%
-                    const targetError = Math.abs(solution.total - target);
-                    const targetErrorScore = Math.max(0, 10 - targetError / target * 100);
-                    
-                    return vatErrorScore + balanceScore + targetErrorScore;
-                },
-                
-                fineTuneForVATError(products, solution, target) {
-                    const n = products.length;
-                    const quantities = [...solution.quantities];
-                    let currentTotal = solution.total;
-                    
-                    const maxIterations = 100;
-                    let bestError = Infinity;
-                    let bestQuantities = [...quantities];
-                    
-                    // Tính sai số VAT hiện tại
-                    const getCurrentVATError = (total) => {
-                        const vat = Math.round(total * this.vatRate / 100);
-                        return Math.abs((total + vat) - this.totalAmount);
-                    };
-                    
-                    bestError = getCurrentVATError(currentTotal);
-                    
-                    for (let iter = 0; iter < maxIterations; iter++) {
-                        let improved = false;
-                        
-                        // Thử điều chỉnh từng sản phẩm
-                        for (let i = 0; i < n; i++) {
-                            // Thử tăng
-                            quantities[i]++;
-                            const newTotal = currentTotal + products[i].price;
-                            const newError = getCurrentVATError(newTotal);
-                            
-                            if (newError < bestError) {
-                                bestError = newError;
-                                bestQuantities = [...quantities];
-                                currentTotal = newTotal;
-                                improved = true;
-                            } else {
-                                quantities[i]--; // Hoàn tác
-                            }
-                            
-                            // Thử giảm (nếu > 1)
-                            if (quantities[i] > 1) {
-                                quantities[i]--;
-                                const newTotal2 = currentTotal - products[i].price;
-                                const newError2 = getCurrentVATError(newTotal2);
-                                
-                                if (newError2 < bestError) {
-                                    bestError = newError2;
-                                    bestQuantities = [...quantities];
-                                    currentTotal = newTotal2;
-                                    improved = true;
-                                } else {
-                                    quantities[i]++; // Hoàn tác
-                                }
-                            }
-                        }
-                        
-                        if (!improved || bestError < 1000) break;
-                    }
-                    
-                    return {
-                        quantities: bestQuantities,
-                        total: bestQuantities.reduce((sum, qty, i) => sum + qty * products[i].price, 0)
-                    };
-                },
-                
-                groupProductsByPrice(products) {
-                    const groups = [];
-                    const used = new Array(products.length).fill(false);
-                    
-                    for (let i = 0; i < products.length; i++) {
-                        if (used[i]) continue;
-                        
-                        const group = [i];
-                        used[i] = true;
-                        
-                        for (let j = i + 1; j < products.length; j++) {
-                            if (!used[j] && Math.abs(products[i].price - products[j].price) <= 1000) {
-                                group.push(j);
-                                used[j] = true;
-                            }
-                        }
-                        groups.push(group);
-                    }
-                    
-                    return groups;
-                },
-                
-                findEqualQuantitySolution(products, target, baseQuantity) {
-                    const n = products.length;
-                    const quantities = new Array(n).fill(baseQuantity);
-                    let currentTotal = quantities.reduce((sum, qty, i) => sum + qty * products[i].price, 0);
-                    
-                    // Điều chỉnh để đạt target với độ ưu tiên: giữ số lượng đều > đạt target chính xác
-                    const maxIterations = 300;
-                    for (let iter = 0; iter < maxIterations; iter++) {
-                        const error = currentTotal - target;
-                        
-                        if (Math.abs(error) < target * 0.005) break; // Sai số < 0.5%
-                        
-                        if (error > 0) {
-                            // Cần giảm - chọn sản phẩm có giá cao nhất
-                            let maxPriceIndex = 0;
-                            for (let i = 1; i < n; i++) {
-                                if (products[i].price > products[maxPriceIndex].price && quantities[i] > 1) {
-                                    maxPriceIndex = i;
-                                }
-                            }
-                            
-                            if (quantities[maxPriceIndex] > 1) {
-                                quantities[maxPriceIndex]--;
-                                currentTotal -= products[maxPriceIndex].price;
-                            } else {
-                                break;
-                            }
-                        } else {
-                            // Cần tăng - chọn sản phẩm có giá thấp nhất
-                            let minPriceIndex = 0;
-                            for (let i = 1; i < n; i++) {
-                                if (products[i].price < products[minPriceIndex].price) {
-                                    minPriceIndex = i;
-                                }
-                            }
-                            
-                            quantities[minPriceIndex]++;
-                            currentTotal += products[minPriceIndex].price;
-                        }
-                    }
-                    
-                    return {
-                        quantities: quantities,
-                        total: currentTotal
-                    };
-                },
-                
-                findGroupBalancedSolution(products, target, baseQuantity, priceGroups) {
-                    const n = products.length;
-                    const quantities = new Array(n).fill(baseQuantity);
-                    let currentTotal = quantities.reduce((sum, qty, i) => sum + qty * products[i].price, 0);
-                    
-                    // Điều chỉnh theo nhóm giá
-                    const maxIterations = 300;
-                    for (let iter = 0; iter < maxIterations; iter++) {
-                        const error = currentTotal - target;
-                        
-                        if (Math.abs(error) < target * 0.01) break;
-                        
-                        if (error > 0) {
-                            // Tìm nhóm có giá cao nhất để giảm
-                            let bestGroupIndex = -1;
-                            let maxAvgPrice = 0;
-                            
-                            for (let g = 0; g < priceGroups.length; g++) {
-                                const group = priceGroups[g];
-                                const avgPrice = group.reduce((sum, idx) => sum + products[idx].price, 0) / group.length;
-                                const canReduce = group.some(idx => quantities[idx] > 1);
-                                
-                                if (canReduce && avgPrice > maxAvgPrice) {
-                                    maxAvgPrice = avgPrice;
-                                    bestGroupIndex = g;
-                                }
-                            }
-                            
-                            if (bestGroupIndex >= 0) {
-                                const group = priceGroups[bestGroupIndex];
-                                // Giảm sản phẩm có số lượng cao nhất trong nhóm
-                                let maxQtyInGroup = 0;
-                                let targetIndex = -1;
-                                for (const idx of group) {
-                                    if (quantities[idx] > maxQtyInGroup && quantities[idx] > 1) {
-                                        maxQtyInGroup = quantities[idx];
-                                        targetIndex = idx;
-                                    }
-                                }
-                                
-                                if (targetIndex >= 0) {
-                                    quantities[targetIndex]--;
-                                    currentTotal -= products[targetIndex].price;
-                                } else {
-                                    break;
-                                }
-                            } else {
-                                break;
-                            }
-                        } else {
-                            // Tìm nhóm có giá thấp nhất để tăng
-                            let bestGroupIndex = -1;
-                            let minAvgPrice = Infinity;
-                            
-                            for (let g = 0; g < priceGroups.length; g++) {
-                                const group = priceGroups[g];
-                                const avgPrice = group.reduce((sum, idx) => sum + products[idx].price, 0) / group.length;
-                                
-                                if (avgPrice < minAvgPrice) {
-                                    minAvgPrice = avgPrice;
-                                    bestGroupIndex = g;
-                                }
-                            }
-                            
-                            if (bestGroupIndex >= 0) {
-                                const group = priceGroups[bestGroupIndex];
-                                // Tăng sản phẩm có số lượng thấp nhất trong nhóm
-                                let minQtyInGroup = Infinity;
-                                let targetIndex = -1;
-                                for (const idx of group) {
-                                    if (quantities[idx] < minQtyInGroup) {
-                                        minQtyInGroup = quantities[idx];
-                                        targetIndex = idx;
-                                    }
-                                }
-                                
-                                if (targetIndex >= 0) {
-                                    quantities[targetIndex]++;
-                                    currentTotal += products[targetIndex].price;
-                                } else {
-                                    break;
-                                }
-                            } else {
-                                break;
-                            }
-                        }
-                    }
-                    
-                    return {
-                        quantities: quantities,
-                        total: currentTotal
-                    };
-                },
-                
-                calculateSolutionScore(solution, target) {
-                    const quantities = solution.quantities;
-                    const n = quantities.length;
-                    
-                    // 1. Điểm sai số (càng nhỏ càng tốt) - trọng số 30%
-                    const error = Math.abs(solution.total - target);
-                    const errorScore = Math.max(0, 1 - error / target) * 30;
-                    
-                    // 2. Điểm cân bằng số lượng (chênh lệch càng nhỏ càng tốt) - trọng số 70%
-                    const maxQty = Math.max(...quantities);
-                    const minQty = Math.min(...quantities);
-                    const qtyDiff = maxQty - minQty;
-                    const balanceScore = Math.max(0, 1 - qtyDiff / Math.max(maxQty, 5)) * 70;
-                    
-                    return errorScore + balanceScore;
-                },
-                
-                improveBalance(products, solution, target) {
-                    const n = products.length;
-                    const quantities = [...solution.quantities];
-                    let currentTotal = solution.total;
-                    let improved = true;
-                    
-                    const maxIterations = 200;
-                    let iterations = 0;
-                    
-                    while (improved && iterations < maxIterations) {
-                        improved = false;
-                        iterations++;
-                        
-                        // Tìm cặp sản phẩm để cân bằng
-                        for (let i = 0; i < n; i++) {
-                            for (let j = 0; j < n; j++) {
-                                if (i !== j && quantities[i] > quantities[j] + 1 && quantities[i] > 1) {
-                                    // Thử chuyển 1 đơn vị từ i sang j
-                                    const oldTotal = currentTotal;
-                                    const newTotal = currentTotal - products[i].price + products[j].price;
-                                    
-                                    // Tính điểm số trước và sau
-                                    const oldSolution = { quantities: [...quantities], total: oldTotal };
-                                    const newQuantities = [...quantities];
-                                    newQuantities[i]--;
-                                    newQuantities[j]++;
-                                    const newSolution = { quantities: newQuantities, total: newTotal };
-                                    
-                                    const oldScore = this.calculateSolutionScore(oldSolution, target);
-                                    const newScore = this.calculateSolutionScore(newSolution, target);
-                                    
-                                    // Chỉ chấp nhận nếu cải thiện điểm số tổng thể
-                                    if (newScore > oldScore) {
-                                        quantities[i]--;
-                                        quantities[j]++;
-                                        currentTotal = newTotal;
-                                        improved = true;
-                                        break;
-                                    }
-                                }
-                            }
-                            if (improved) break;
-                        }
-                        
-                        // Nếu không cải thiện được bằng hoán đổi, thử điều chỉnh nhỏ
-                        if (!improved) {
-                            const currentError = Math.abs(currentTotal - target);
-                            
-                            // Thử điều chỉnh để giảm sai số mà không làm mất cân bằng quá nhiều
-                            for (let i = 0; i < n; i++) {
-                                if (currentTotal < target) {
-                                    // Thử tăng sản phẩm có số lượng thấp nhất
-                                    const minQty = Math.min(...quantities);
-                                    if (quantities[i] === minQty) {
-                                        const newTotal = currentTotal + products[i].price;
-                                        const newError = Math.abs(newTotal - target);
-                                        
-                                        if (newError < currentError) {
-                                            quantities[i]++;
-                                            currentTotal = newTotal;
-                                            improved = true;
-                                            break;
-                                        }
-                                    }
-                                } else {
-                                    // Thử giảm sản phẩm có số lượng cao nhất
-                                    const maxQty = Math.max(...quantities);
-                                    if (quantities[i] === maxQty && quantities[i] > 1) {
-                                        const newTotal = currentTotal - products[i].price;
-                                        const newError = Math.abs(newTotal - target);
-                                        
-                                        if (newError < currentError) {
-                                            quantities[i]--;
-                                            currentTotal = newTotal;
-                                            improved = true;
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    
-                    return {
-                        quantities: quantities,
-                        total: currentTotal
-                    };
-                }
-            }
-        }).mount('#app');
-    </script>
-</body>
+    <script src="finder.js"></script>
+    <script src="app.js"></script>
+  </body>
 </html>
