@@ -102,7 +102,7 @@ createApp({
       const esp = this.calcError();
       const endItemIdx = this.calculatedResults.length - 1;
       const lastItem = this.calculatedResults[endItemIdx];
-      if (esp >= lastItem.quantity) {
+      if (Math.abs(esp) >= lastItem.quantity) {
         const newPrice = Math.round(
           lastItem.price + esp / (lastItem.quantity * multiple)
         );
