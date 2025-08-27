@@ -6,9 +6,9 @@ createApp({
       totalAmount: 0,
       vatRate: 10,
       products: [
-        // { name: "Rượu vang De La Rosa Rosso 750ml", price: 90000 },
-        // { name: "Rượu vang Marcoli Rosso 750ml", price: 90000 },
-        // { name: "Rượu vang Segreto Negroamaro 750ml", price: 100000 },
+        // { name: "Rượu vang De La Rosa Rosso 750ml", price: 77000 },
+        // { name: "Rượu vang Marcoli Rosso 750ml", price: 62000 },
+        // { name: "Rượu vang Segreto Negroamaro 750ml", price: 45000 },
         // { name: "Rượu vang 1933 Rosso 750ml", price: 90000 },
         // { name: "Rượu vang Tolucci đỏ 14% 750ml", price: 90000 },
         // {
@@ -24,6 +24,7 @@ createApp({
       showResults: false,
       errorMessage: "",
       successMessage: "",
+      isAdjustLastPrice: false,
     };
   },
   computed: {
@@ -57,9 +58,9 @@ createApp({
       return new Intl.NumberFormat("vi-VN").format(num);
     },
     removeAllProducts() {
-      let y = confirm("Xác nhận xóa?")
+      let y = confirm("Xác nhận xóa?");
       if (y) {
-        this.products = []
+        this.products = [];
       }
     },
     calculate() {
@@ -97,11 +98,30 @@ createApp({
         quantity: result.x[idx],
         subtotal: item.price * result.x[idx],
       }));
+      const multiple = 1 + this.vatRate / 100;
+      const esp = this.calcError();
+      const endItemIdx = this.calculatedResults.length - 1;
+      const lastItem = this.calculatedResults[endItemIdx];
+      if (esp >= lastItem.quantity) {
+        const newPrice = Math.round(
+          lastItem.price + esp / (lastItem.quantity * multiple)
+        );
+        lastItem.price = newPrice;
+        lastItem.subtotal = newPrice * lastItem.quantity;
+        this.isAdjustLastPrice = true;
+      }
+      const error = this.calcError();
       this.successMessage = `✅ Tìm được phương án tối ưu! Sai số: ${this.formatNumber(
-        Math.abs(result.err)
+        Math.abs(error)
       )} VNĐ`;
 
       this.scrollToElement("#calculated");
+    },
+    calcError() {
+      const multiple = 1 + this.vatRate / 100;
+      const total =
+        Math.round(this.calculatedResults.reduce((a, b) => a + b.subtotal, 0) * multiple);
+      return this.totalAmount - total;
     },
   },
 }).mount("#app");

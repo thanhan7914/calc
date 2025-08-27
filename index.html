@@ -125,7 +125,7 @@
                   <td>{{ index + 1 }}</td>
                   <td>{{ result.name }}</td>
                   <td>{{ result.quantity }}</td>
-                  <td>{{ formatNumber(result.price) }}</td>
+                  <td :class="{'adjust': isAdjustLastPrice && index == calculatedResults.length - 1}">{{ formatNumber(result.price) }}</td>
                   <td>{{ formatNumber(result.subtotal) }}</td>
                 </tr>
                 <tr class="total-row">

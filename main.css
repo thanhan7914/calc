@@ -247,6 +247,10 @@ input[type="number"]:focus {
     margin: 20px 0;
 }
 
+td.adjust {
+    color: red;
+}
+
 @media (max-width: 768px) {
     .container {
         margin: 10px;
