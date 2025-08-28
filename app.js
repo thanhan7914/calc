@@ -6,11 +6,11 @@ createApp({
       totalAmount: 0,
       vatRate: 10,
       products: [
-        // { name: "Rượu vang De La Rosa Rosso 750ml", price: 77000 },
-        // { name: "Rượu vang Marcoli Rosso 750ml", price: 62000 },
-        // { name: "Rượu vang Segreto Negroamaro 750ml", price: 45000 },
-        // { name: "Rượu vang 1933 Rosso 750ml", price: 90000 },
-        // { name: "Rượu vang Tolucci đỏ 14% 750ml", price: 90000 },
+        // { name: "Rượu vang De La Rosa Rosso 750ml", price: 75000 },
+        // { name: "Rượu vang Marcoli Rosso 750ml", price: 55000 },
+        // { name: "Rượu vang Segreto Negroamaro 750ml", price: 90000 },
+        // { name: "Rượu vang 1933 Rosso 750ml", price: 110000 },
+        // { name: "Rượu vang Tolucci đỏ 14% 750ml", price: 62000 },
         // {
         //   name: "Rượu Vang Francis Gillot Sauvignon Blanc 750ml",
         //   price: 60909,
@@ -25,6 +25,7 @@ createApp({
       errorMessage: "",
       successMessage: "",
       isAdjustLastPrice: false,
+      adjustIndex: -1,
     };
   },
   computed: {
@@ -103,12 +104,13 @@ createApp({
       const endItemIdx = this.calculatedResults.length - 1;
       const lastItem = this.calculatedResults[endItemIdx];
       if (Math.abs(esp) >= lastItem.quantity) {
-        const newPrice = Math.round(
-          lastItem.price + esp / (lastItem.quantity * multiple)
+        const newPrice = Number(
+          (lastItem.price + esp / (lastItem.quantity * multiple)).toFixed(3)
         );
         lastItem.price = newPrice;
         lastItem.subtotal = newPrice * lastItem.quantity;
         this.isAdjustLastPrice = true;
+        this.adjustIndex = endItemIdx;
       }
       const error = this.calcError();
       this.successMessage = `✅ Tìm được phương án tối ưu! Sai số: ${this.formatNumber(
@@ -119,8 +121,11 @@ createApp({
     },
     calcError() {
       const multiple = 1 + this.vatRate / 100;
-      const total =
-        Math.round(this.calculatedResults.reduce((a, b) => a + b.subtotal, 0) * multiple);
+      const total = Number(
+        (
+          this.calculatedResults.reduce((a, b) => a + b.subtotal, 0) * multiple
+        ).toFixed(3)
+      );
       return this.totalAmount - total;
     },
   },
